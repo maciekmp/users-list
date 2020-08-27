@@ -3,11 +3,16 @@ import React, { useState, useEffect } from 'react';
 export const UsersList = () => {
   const [users, setUsers] = useState(null);
   const [query, setQuery] = useState('');
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     fetch('https://jsonplaceholder.typicode.com/users')
       .then(response => response.json())
-      .then(setUsers);
+      .then(setUsers)
+      .catch(() => {
+        setUsers([]);
+        setError(true);
+      })
   }, []);
 
   return (
@@ -21,6 +26,7 @@ export const UsersList = () => {
         }} />
       <div />
       {!users && 'Loading...'}
+      {error && 'Error while fetching data'}
       <ol>
         {users && users
           .filter(user => user.name.toLowerCase().includes(query.toLowerCase()))
